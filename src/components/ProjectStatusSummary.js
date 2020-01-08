@@ -121,6 +121,7 @@ export default class ProjectStatusSummary extends Component {
     static propTypes = {
         project: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
         gitRef: PropTypes.string,
+        stripNamespaceFromName: PropTypes.string,
         hideCommitMessage: PropTypes.bool.isRequired,
         apiData: PipelineApiPropType,
         apiError: PropTypes.object,
@@ -144,11 +145,15 @@ export default class ProjectStatusSummary extends Component {
     }
 
     render() {
-        const { hideCommitMessage, apiData, apiError, theme } = this.props
+        const { hideCommitMessage, apiData, apiError, theme, stripNamespaceFromName } = this.props
 
         let content = <WidgetLoader />
         if (apiData && !apiError) {
             const GlobalIcon = iconByStatus(apiData.status)
+            var namespaceWithName = apiData.project.name_with_namespace
+            if (stripNamespaceFromName) {
+                namespaceWithName = namespaceWithName.replace(`${stripNamespaceFromName} / `, '')
+            }
 
             content = (
                 <Container>
@@ -164,10 +169,12 @@ export default class ProjectStatusSummary extends Component {
                         <Header>
                             <InfoItem>
                                 <ExternalLink href={apiData.project.web_url}>
-                                    {apiData.project.name}
+                                    {namespaceWithName}
                                 </ExternalLink>
                             </InfoItem>
-                            <InfoItem>{apiData.coverage}%</InfoItem>
+                            <InfoItem>{apiData.coverage && `${apiData.coverage}%`}</InfoItem>
+                        </Header>
+                        <Header>
                             <InfoItem>
                                 <ExternalLink href={apiData.web_url}>#{apiData.id}</ExternalLink>{' '}
                             </InfoItem>
