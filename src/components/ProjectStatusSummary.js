@@ -1,23 +1,20 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import PipelineApiPropType from './PipelineApiPropType'
 import styled from 'styled-components'
 import { truncate } from 'lodash'
 import moment from 'moment'
+import PipelineApiPropType from './pipelines/PipelineApiPropType'
 import {
     TrapApiError,
     Widget,
     WidgetBody,
     WidgetLoader,
     ClockIcon,
-    GitBranchIcon,
-    GitCommitIcon,
     PauseCircleIcon,
     CheckCircleIcon,
     AlertCircleIcon,
     FastForwardIcon,
     ExternalLink,
-    WidgetAvatar,
     typography,
 } from '@mozaik/ui'
 
@@ -120,7 +117,7 @@ export const iconByStatus = status => {
     return PauseCircleIcon
 }
 
-export default class LatestProjectPipeline extends Component {
+export default class ProjectStatusSummary extends Component {
     static propTypes = {
         project: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
         gitRef: PropTypes.string,
@@ -166,47 +163,13 @@ export default class LatestProjectPipeline extends Component {
                     <InnerContainer>
                         <Header>
                             <InfoItem>
-                                <ExternalLink
-                                    href={`${apiData.project.web_url}/pipelines/${apiData.id}`}
-                                >
-                                    #{apiData.id}
-                                </ExternalLink>{' '}
-                                by{' '}
-                                <WidgetAvatar
-                                    size="2.6vmin"
-                                    style={{ display: 'inline-block', verticalAlign: 'middle' }}
-                                >
-                                    <img src={apiData.user.avatar_url} alt={apiData.user.name} />
-                                </WidgetAvatar>{' '}
-                                <ExternalLink href={apiData.user.web_url}>
-                                    {apiData.user.name}
+                                <ExternalLink href={apiData.project.web_url}>
+                                    {apiData.project.name}
                                 </ExternalLink>
                             </InfoItem>
+                            <InfoItem>{apiData.coverage}%</InfoItem>
                             <InfoItem>
-                                <GitBranchIcon
-                                    size="1.8vmin"
-                                    style={{
-                                        display: 'inline-block',
-                                        verticalAlign: 'middle',
-                                    }}
-                                />{' '}
-                                <ExternalLink
-                                    href={`${apiData.project.web_url}/commits/${apiData.ref}`}
-                                >
-                                    {apiData.ref}
-                                </ExternalLink>{' '}
-                                <GitCommitIcon
-                                    size="1.8vmin"
-                                    style={{
-                                        display: 'inline-block',
-                                        verticalAlign: 'middle',
-                                    }}
-                                />{' '}
-                                <ExternalLink
-                                    href={`${apiData.project.web_url}/commit/${apiData.commit.id}`}
-                                >
-                                    {apiData.commit.short_id}
-                                </ExternalLink>
+                                <ExternalLink href={apiData.web_url}>#{apiData.id}</ExternalLink>{' '}
                             </InfoItem>
                             <InfoItem>
                                 <ClockIcon
